@@ -1,0 +1,13 @@
+# IDEs
+.idea/
+.vscode/
+
+# Virtual environments & environment variables
+.env
+.venv
+env/
+venv/
+ENV/
+
+# macOS-specific
+.DS_Store
