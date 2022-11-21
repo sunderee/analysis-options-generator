@@ -8,7 +8,22 @@ Dart/Flutter projects are missing `analysis_options.yaml` file with pre-populate
 (similarly to how TypeScript does it with `tsconfig.json`). As a result, many developers don't configure their linter in
 accordance to the best practices, and manual configuration takes time.
 
-**Heavy work in progress.**
+## Usage
+
+First you'll have to generate `rules.json` file; which is just a file of all the rules with some additional information
+associated with them. The reason why we're doing this, is because there's no reason to run costly (and lengthy) HTTP
+operation with every time you're generating `analysis_options.yaml` file for your next project. You can always
+regenerate it.
+
+```bash
+# Create virtual environment and install dependencies
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements.txt
+
+# Run setup.py script
+python3 setup.py
+```
 
 ## Further information and details
 

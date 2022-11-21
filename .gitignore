@@ -11,3 +11,6 @@ ENV/
 
 # macOS-specific
 .DS_Store
+
+# Files
+rules.json
