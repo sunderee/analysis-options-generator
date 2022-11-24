@@ -15,14 +15,19 @@ class Parser:
 
         soup = BeautifulSoup(html, 'html.parser')
         rule_models: list[RuleModel] = []
-        tags = [t for t in soup.find('main').find('article').find('div').children if isinstance(t, Tag)]
+        tags: list[Tag] = [element for element
+                           in soup.find('main').find('article').find('div').children
+                           if isinstance(element, Tag)]
 
         for index, tag in enumerate(tags):
             if tag.name == 'h3':
+                rule_id: str = tag.text.strip()
+                description: str = tags[index + 1].text.strip()
+
                 try:
                     is_still_paragraph = True
                     count = 2
-                    paragraphs = []
+                    paragraphs: list[str] = []
                     while is_still_paragraph:
                         if tags[index + count].name != 'h3':
                             if tags[index + count].name == 'p':
@@ -31,8 +36,6 @@ class Parser:
                         else:
                             is_still_paragraph = False
 
-                    rule_id = tag.text.strip()
-                    description = tags[index + 1].text.strip()
                     has_quick_fix = False
                     rule_set: RuleSetEnum | None = None
                     maturity_level: MaturityLevelEnum = MaturityLevelEnum.STABLE
@@ -47,8 +50,8 @@ class Parser:
                                 rule_set = RuleSetEnum.RECOMMENDED
                             else:
                                 rule_set = RuleSetEnum.CORE
-                        if paragraph.__contains__('DEPRECATED:') or \
-                                paragraph.__contains__('This rule is currently deprecated'):
+                        if paragraph.__contains__('DEPRECATED:') \
+                                or paragraph.__contains__('This rule is currently deprecated'):
                             maturity_level = MaturityLevelEnum.DEPRECATED
                         if paragraph.__contains__('This rule is currently experimental'):
                             maturity_level = MaturityLevelEnum.EXPERIMENTAL
@@ -60,14 +63,20 @@ class Parser:
                         rule_set=rule_set,
                         maturity=maturity_level))
                 except IndexError:
-                    break
+                    rule_models.append(RuleModel(
+                        id=rule_id,
+                        description=description,
+                        has_quick_fix=False,
+                        rule_set=None,
+                        maturity=MaturityLevelEnum.STABLE
+                    ))
+
         return rule_models
 
     @staticmethod
     def pack_rules_to_json(rules: list[RuleModel]):
-        json_string = dumps([rule.to_object() for rule in rules])
         with open(f'{getcwd()}/rules.json', 'w') as file:
-            file.write(json_string)
+            file.write(dumps([rule.to_object() for rule in rules]))
 
     @staticmethod
     def __get_documentation_html() -> str:
