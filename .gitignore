@@ -9,6 +9,9 @@ env/
 venv/
 ENV/
 
+# Cache
+__pycache__
+
 # macOS-specific
 .DS_Store
 
