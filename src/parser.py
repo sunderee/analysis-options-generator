@@ -11,10 +11,7 @@ from src.models.rule_model import RuleModel
 class Parser:
     @staticmethod
     def find_all_rules() -> list[RuleModel]:
-        print('Finding rules...')
-
         html: str = Parser.__get_documentation_html()
-        print('...fetched documentation HTML')
 
         soup = BeautifulSoup(html, 'html.parser')
         rule_models: list[RuleModel] = []
@@ -56,7 +53,6 @@ class Parser:
                         if paragraph.__contains__('This rule is currently experimental'):
                             maturity_level = MaturityLevelEnum.EXPERIMENTAL
 
-                    print(f'...found rule {rule_id}')
                     rule_models.append(RuleModel(
                         id=rule_id,
                         description=description,
@@ -65,18 +61,13 @@ class Parser:
                         maturity=maturity_level))
                 except IndexError:
                     break
-
-        print('...DONE with fetching & parsing.')
         return rule_models
 
     @staticmethod
     def pack_rules_to_json(rules: list[RuleModel]):
-        print(f'Writing {len(rules)} rules to JSON file...')
-
         json_string = dumps([rule.to_object() for rule in rules])
         with open(f'{getcwd()}/rules.json', 'w') as file:
             file.write(json_string)
-        print('...DONE you now have rules.json file.')
 
     @staticmethod
     def __get_documentation_html() -> str:
