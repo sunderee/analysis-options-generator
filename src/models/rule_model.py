@@ -8,14 +8,14 @@ class RuleModel:
     id: str
     description: str
     has_quick_fix: bool
-    rule_set: RuleSetEnum | None
+    rule_sets: list[RuleSetEnum]
     maturity: MaturityLevelEnum
 
-    def to_object(self) -> dict[str, str | bool | RuleSetEnum | MaturityLevelEnum | None]:
+    def to_object(self) -> dict[str, str | bool | list[RuleSetEnum] | MaturityLevelEnum | None]:
         return {
             'id': self.id,
             'description': self.description,
             'has_quick_fix': self.has_quick_fix,
-            'rule_set': self.rule_set.value if self.rule_set is not None else None,
+            'rule_sets': [item.name for item in self.rule_sets],
             'maturity_level': self.maturity.value
         }

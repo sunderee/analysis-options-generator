@@ -37,19 +37,21 @@ class Parser:
                             is_still_paragraph = False
 
                     has_quick_fix = False
-                    rule_set: RuleSetEnum | None = None
+                    rule_sets: list[RuleSetEnum] = []
                     maturity_level: MaturityLevelEnum = MaturityLevelEnum.STABLE
 
                     for paragraph in paragraphs:
                         if paragraph.__contains__('This rule has a quick fix available'):
                             has_quick_fix = True
+
                         if paragraph.__contains__('Rule sets:'):
+                            paragraph = paragraph.strip().replace('\n', ' ')
                             if paragraph.__contains__('flutter'):
-                                rule_set = RuleSetEnum.FLUTTER
-                            elif paragraph.__contains__('recommended'):
-                                rule_set = RuleSetEnum.RECOMMENDED
-                            else:
-                                rule_set = RuleSetEnum.CORE
+                                rule_sets.append(RuleSetEnum.FLUTTER)
+                            if paragraph.__contains__('recommended'):
+                                rule_sets.append(RuleSetEnum.RECOMMENDED)
+                            if paragraph.__contains__('core'):
+                                rule_sets.append(RuleSetEnum.CORE)
                         if paragraph.__contains__('DEPRECATED:') \
                                 or paragraph.__contains__('This rule is currently deprecated'):
                             maturity_level = MaturityLevelEnum.DEPRECATED
@@ -60,14 +62,14 @@ class Parser:
                         id=rule_id,
                         description=description,
                         has_quick_fix=has_quick_fix,
-                        rule_set=rule_set,
+                        rule_sets=rule_sets,
                         maturity=maturity_level))
                 except IndexError:
                     rule_models.append(RuleModel(
                         id=rule_id,
                         description=description,
                         has_quick_fix=False,
-                        rule_set=None,
+                        rule_sets=[],
                         maturity=MaturityLevelEnum.STABLE
                     ))
 
