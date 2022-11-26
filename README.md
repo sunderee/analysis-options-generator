@@ -8,6 +8,8 @@ Dart/Flutter projects are missing `analysis_options.yaml` file with pre-populate
 (similarly to how TypeScript does it with `tsconfig.json`). As a result, many developers don't configure their linter in
 accordance to the best practices, and manual configuration takes time.
 
+This is an opinionated generator, and will (by default) set the severity to every enabled rule to `error`.
+
 ## Usage
 
 First you'll have to generate `rules.json` file; which is just a file of all the rules with some additional information
@@ -24,6 +26,16 @@ pip3 install -r requirements.txt
 # Run setup.py script
 python3 setup.py
 ```
+
+Now you can use the `main.py` script. Use `--help` flag to see how it works.
+
+```bash
+python3 main.py --help
+```
+
+You need to provide the absolute path to the directory in which you want to generate the `analysis_options.yaml` file.
+Then, using `--rule-sets` flag you choose one of the three preferred rule sets. Lastly, with `--soft-mode` turned on,
+you set the severity of each rule to warning, not error (which is the default severity).
 
 ## Further information and details
 
@@ -79,3 +91,13 @@ Each rule has a maturity level:
    report
    any issues you come across.
 3. **Deprecated**: these rules are no longer suggested for use and might be removed in a future linter release.
+
+### Severity
+
+Each analyzer error code and linter rule has a default severity. You can use the analysis options file to change the
+severity of individual rules, or to always ignore some rules. The analyzer supports three severity levels:
+
+1. `info`: an informational message that doesn't cause analysis to fail.
+2. `warning`: a warning that doesn't cause analysis to fail unless the analyzer is configured to treat warnings as
+   errors.
+3. `error`: an error that causes analysis to fail.

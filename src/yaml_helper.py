@@ -22,8 +22,8 @@ analyzer:
 
 class YAMLHelper:
     @staticmethod
-    def generate_analysis_options(rule_set: RuleSetEnum, soft_mode: bool) -> None:
-        with open(f'{getcwd()}/analysis_options.yaml', 'w') as file:
+    def generate_analysis_options(path: str, rule_set: RuleSetEnum, soft_mode: bool) -> None:
+        with open(f'{path}/analysis_options.yaml', 'w') as file:
             match rule_set:
                 case RuleSetEnum.CORE:
                     file.write(lints_core_import)
