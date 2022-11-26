@@ -1,21 +1,21 @@
 # Dart Analysis Options Generator
 
-Tool for automatically populating `analysis_options.yaml` file with all the available linting rules described by the
-[official documentation](https://dart.dev/tools/linter-rules). This is a Python-based CLI.
+Python-based CLI tool for automatically populating analysis_options.yaml file with all the available linting rules
+described by the [official documentation](https://dart.dev/tools/linter-rules).
 
-**Motivation:** although VSCode has a superb auto-complete functionality through Dart/Flutter plugins, newly generated
-Dart/Flutter projects are missing `analysis_options.yaml` file with pre-populated linting rules and their explanations
-(similarly to how TypeScript does it with `tsconfig.json`). As a result, many developers don't configure their linter in
-accordance to the best practices, and manual configuration takes time.
+**Motivation**: although VSCode has superb auto-complete functionality through Dart/Flutter plugins, newly generated
+Dart/Flutter projects are missing analysis options file with pre-populated linting rules and their explanations (similar
+to how TypeScript does it with `tsconfig.json`). As a result, many developers don't configure their linter following
+best
+practices, and manual configuration takes time.
 
-This is an opinionated generator, and will (by default) set the severity to every enabled rule to `error`.
+This is an opinionated generator and will (by default) set the severity to every enabled rule to `error`.
 
 ## Usage
 
-First you'll have to generate `rules.json` file; which is just a file of all the rules with some additional information
-associated with them. The reason why we're doing this, is because there's no reason to run costly (and lengthy) HTTP
-operation with every time you're generating `analysis_options.yaml` file for your next project. You can always
-regenerate it.
+First, you'll have to generate a `rules.json` file, which is just a file of all the rules. We're doing this because
+there's no reason to run a costly (and lengthy) HTTP operation every time. You can regenerate it as many times as you
+like.
 
 ```bash
 # Create virtual environment and install dependencies
@@ -34,8 +34,8 @@ python3 main.py --help
 ```
 
 You need to provide the absolute path to the directory in which you want to generate the `analysis_options.yaml` file.
-Then, using `--rule-sets` flag you choose one of the three preferred rule sets. Lastly, with `--soft-mode` turned on,
-you set the severity of each rule to warning, not error (which is the default severity).
+Then, with the `--rule-sets` flag, you choose one of the three preferred rule sets. Lastly, with `--soft-mode` turned
+on, you set the severity of each rule to a `warning`, not an `error` (which is the default severity).
 
 ## Further information and details
 
