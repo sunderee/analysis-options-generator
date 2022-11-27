@@ -12,6 +12,12 @@ ENV/
 # Cache
 __pycache__
 
+# PyInstaller
+*.manifest
+*.spec
+build/
+dist/
+
 # macOS-specific
 .DS_Store
 

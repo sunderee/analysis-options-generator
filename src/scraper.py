@@ -1,6 +1,4 @@
 import urllib.request
-from json import dumps
-from os import getcwd
 
 from bs4 import BeautifulSoup, Tag
 
@@ -8,10 +6,10 @@ from src.models.enums import RuleSetEnum, MaturityLevelEnum
 from src.models.rule_model import RuleModel
 
 
-class Parser:
+class Scraper:
     @staticmethod
     def find_all_rules() -> list[RuleModel]:
-        html: str = Parser.__get_documentation_html()
+        html: str = Scraper.__get_documentation_html()
 
         soup = BeautifulSoup(html, 'html.parser')
         rule_models: list[RuleModel] = []
@@ -74,11 +72,6 @@ class Parser:
                     ))
 
         return rule_models
-
-    @staticmethod
-    def pack_rules_to_json(rules: list[RuleModel]):
-        with open(f'{getcwd()}/rules.json', 'w') as file:
-            file.write(dumps([rule.to_object() for rule in rules]))
 
     @staticmethod
     def __get_documentation_html() -> str:
