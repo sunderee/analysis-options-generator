@@ -1,9 +1,6 @@
-from json import load
-from os import getcwd
 from typing import TextIO
 
-from src.models.enums import RuleSetEnum, maturity_level_from_value, MaturityLevelEnum, \
-    rule_set_from_list
+from src.models.enums import RuleSetEnum, MaturityLevelEnum
 from src.models.rule_model import RuleModel
 
 lints_core_import = 'include: package:lints/core.yaml'
@@ -22,7 +19,7 @@ analyzer:
 
 class YAMLHelper:
     @staticmethod
-    def generate_analysis_options(path: str, rule_set: RuleSetEnum, soft_mode: bool) -> None:
+    def generate_analysis_options(path: str, rules: list[RuleModel], rule_set: RuleSetEnum, soft_mode: bool) -> None:
         with open(f'{path}/analysis_options.yaml', 'w') as file:
             match rule_set:
                 case RuleSetEnum.CORE:
@@ -37,25 +34,7 @@ class YAMLHelper:
             file.write('\n')
             file.write(analyzer_section)
 
-            all_rules = YAMLHelper.__load_rules_from_file()
-            YAMLHelper.__write_rules_to_file(rules=all_rules, rule_set=rule_set, soft_mode=soft_mode, file=file)
-
-    @staticmethod
-    def __load_rules_from_file() -> list[RuleModel]:
-        with open(f'{getcwd()}/rules.json', 'r') as file:
-            raw_json: list[dict] = load(file)
-            rules: list[RuleModel] = []
-            for item in raw_json:
-                rule = RuleModel(
-                    id=item['id'],
-                    description=item['description'],
-                    has_quick_fix=item['has_quick_fix'],
-                    rule_sets=rule_set_from_list(item['rule_sets']),
-                    maturity=maturity_level_from_value(item['maturity_level'])
-                )
-                rules.append(rule)
-
-        return rules
+            YAMLHelper.__write_rules_to_file(rules=rules, rule_set=rule_set, soft_mode=soft_mode, file=file)
 
     @staticmethod
     def __write_rules_to_file(rules: list[RuleModel], rule_set: RuleSetEnum, soft_mode: bool, file: TextIO) -> None:

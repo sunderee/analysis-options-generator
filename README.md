@@ -13,9 +13,8 @@ This is an opinionated generator and will (by default) set the severity to every
 
 ## Usage
 
-First, you'll have to generate a `rules.json` file, which is just a file of all the rules. We're doing this because
-there's no reason to run a costly (and lengthy) HTTP operation every time. You can regenerate it as many times as you
-like.
+First, create the virtual environment and install dependencies from `requirements.txt`. Next, run the PyInstaller in
+order to produce an executable. You can name it whatever you want, `analysis-gen` is what I'll call it.
 
 ```bash
 # Create virtual environment and install dependencies
@@ -23,23 +22,38 @@ python3 -m venv venv
 source venv/bin/activate
 pip3 install -r requirements.txt
 
-# Run setup.py script
-python3 setup.py
+# Generate an executable
+pyinstaller --onefile --name=analysis-gen main.py
 ```
 
-Now you can use the `main.py` script. Use `--help` flag to see how it works.
+This should produce a CLI executable found in `dist/analysis-gen`. At this point, you can use it however you like. My
+suggestion is to create an alias.
 
 ```bash
-python3 main.py --help
+alias analysis-gen="/absolute/path/to/dist/analysis-gen"
 ```
 
-You need to provide the absolute path to the directory in which you want to generate the `analysis_options.yaml` file.
-Then, with the `--rule-sets` flag, you choose one of the three preferred rule sets. Lastly, with `--soft-mode` turned
-on, you set the severity of each rule to a `warning`, not an `error` (which is the default severity).
+If you want to learn how to use the CLI, refer to the help message (`analysis-gen --help`):
+
+```
+$ analysis-gen --help
+usage: analysis-gen [-h] [-r {core,recommended,flutter}] -p PATH [-s]
+
+Tool for automatically populating analysis_options.yaml file with all the available linting rules described by the official documentation.
+
+options:
+  -h, --help            show this help message and exit
+  -r {core,recommended,flutter}, --rule-set {core,recommended,flutter}
+                        Sets the rule set that analysis_options.yaml will contain. Defaults to core.
+  -p PATH, --path PATH  Absolute path to where you want to generate the analysis_options.yaml file
+  -s, --soft-mode       Sets the severity of enabled linting rules to "warning"
+```
 
 ## Further information and details
 
-*Disclaimer: this section is heavily based on the official documentation on linting rules.*
+*Disclaimer: this section is copied from the official documentation. No need to reinvent the wheel if Google already
+wrote things concisely enough. Knowing that people typically don't click on the links, I took some liberty to bring the
+documentation to you.*
 
 Some rules can be fixed automatically using **quick fixes**. A quick fix is an automated edit targeted at fixing the
 issue reported by the linter rule. If the rule has a quick fix, it can be applied
