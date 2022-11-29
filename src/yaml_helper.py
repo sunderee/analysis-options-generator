@@ -38,13 +38,14 @@ class YAMLHelper:
 
     @staticmethod
     def __write_rules_to_file(rules: list[RuleModel], rule_set: RuleSetEnum, soft_mode: bool, file: TextIO) -> None:
-        applicable_rules = [rule.id for rule in rules
-                            if YAMLHelper.__is_rule_legible_for_display(maturity_level=rule.maturity,
-                                                                        selected_rule_set=rule_set,
-                                                                        available_rule_sets=rule.rule_sets)]
         file.write('  errors:\n')
-        for applicable_rule in applicable_rules:
-            file.write(f'    {applicable_rule}: {"warning" if soft_mode else "error"}\n')
+        for rule in rules:
+            if YAMLHelper.__should_be_included(maturity_level=rule.maturity,
+                                               selected_rule_set=rule_set,
+                                               available_rule_sets=rule.rule_sets):
+                file.write(f'    {rule.id}: {"warning" if soft_mode else "error"}\n')
+            else:
+                file.write(f'    # {rule.id}: {"warning" if soft_mode else "error"}\n')
 
         file.write('\nlinter:\n  rules:\n')
         for rule in rules:
@@ -54,16 +55,17 @@ class YAMLHelper:
             if rule.maturity == MaturityLevelEnum.DEPRECATED:
                 file.write(f'    # This rule is deprecated. Do not use it.\n')
 
-            if YAMLHelper.__is_rule_legible_for_display(maturity_level=rule.maturity,
-                                                        selected_rule_set=rule_set,
-                                                        available_rule_sets=rule.rule_sets):
+            if YAMLHelper.__should_be_included(maturity_level=rule.maturity,
+                                               selected_rule_set=rule_set,
+                                               available_rule_sets=rule.rule_sets):
                 file.write(f'    - {rule.id}\n\n')
             else:
                 file.write(f'    # - {rule.id}\n\n')
 
     @staticmethod
-    def __is_rule_legible_for_display(maturity_level: MaturityLevelEnum, selected_rule_set: RuleSetEnum,
-                                      available_rule_sets: list[RuleSetEnum]) -> bool:
+    def __should_be_included(maturity_level: MaturityLevelEnum,
+                             selected_rule_set: RuleSetEnum,
+                             available_rule_sets: list[RuleSetEnum]) -> bool:
         if maturity_level != MaturityLevelEnum.STABLE:
             return False
 
