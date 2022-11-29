@@ -38,8 +38,15 @@ class YAMLHelper:
 
     @staticmethod
     def __write_rules_to_file(rules: list[RuleModel], rule_set: RuleSetEnum, soft_mode: bool, file: TextIO) -> None:
-        file.write('\nlinter:\n   rules:\n')
+        applicable_rules = [rule.id for rule in rules
+                            if YAMLHelper.__is_rule_legible_for_display(maturity_level=rule.maturity,
+                                                                        selected_rule_set=rule_set,
+                                                                        available_rule_sets=rule.rule_sets)]
+        file.write('  errors:\n')
+        for applicable_rule in applicable_rules:
+            file.write(f'    {applicable_rule}: {"warning" if soft_mode else "error"}\n')
 
+        file.write('\nlinter:\n  rules:\n')
         for rule in rules:
             file.write(f'    # {rule.description}\n')
             if rule.maturity == MaturityLevelEnum.EXPERIMENTAL:
@@ -50,9 +57,9 @@ class YAMLHelper:
             if YAMLHelper.__is_rule_legible_for_display(maturity_level=rule.maturity,
                                                         selected_rule_set=rule_set,
                                                         available_rule_sets=rule.rule_sets):
-                file.write(f'    {rule.id}: {"warning" if soft_mode else "error"}\n\n')
+                file.write(f'    - {rule.id}\n\n')
             else:
-                file.write(f'    # {rule.id}: {"warning" if soft_mode else "error"}\n\n')
+                file.write(f'    # - {rule.id}\n\n')
 
     @staticmethod
     def __is_rule_legible_for_display(maturity_level: MaturityLevelEnum, selected_rule_set: RuleSetEnum,
