@@ -2,5 +2,5 @@ altgraph==0.17.3
 beautifulsoup4==4.11.1
 macholib==1.16.2
 pyinstaller==5.7.0
-pyinstaller-hooks-contrib==2022.13
+pyinstaller-hooks-contrib==2022.14
 soupsieve==2.3.2.post1
